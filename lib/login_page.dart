@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _saveUsername(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+  }
+
+  void _login() async {
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text;
+
+    if (username == 'ardodimas' && password == '12345') {
+      await _saveUsername(username);
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Login Gagal'),
+              content: const Text('Username atau password salah'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +75,13 @@ class LoginPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // Logo Undiksha
-                      Image.asset(
-                        'assets/logo_undiksha.png',
-                        width: 120,
-                        height: 120,
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: AssetImage('assets/profile1.jpg'),
                       ),
                       const SizedBox(height: 24),
-                      // Form Login
                       TextField(
+                        controller: _usernameController,
                         decoration: InputDecoration(
                           labelText: 'Username',
                           border: OutlineInputBorder(
@@ -53,6 +91,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       TextField(
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
@@ -66,9 +105,7 @@ class LoginPage extends StatelessWidget {
                         width: double.infinity,
                         height: 45,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          },
+                          onPressed: _login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1A237E),
                             shape: RoundedRectangleBorder(

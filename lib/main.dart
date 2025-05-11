@@ -1,9 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'saldo_provider.dart';
 import 'login_page.dart';
 import 'home_page.dart';
+import 'profile.dart';
+import 'cek_saldo.dart';
+import 'transfer.dart';
+import 'deposito.dart';
+import 'pembayaran.dart';
+import 'pinjaman.dart';
+import 'mutasi.dart';
+import 'setting.dart';
+import 'profile_provider.dart';
+import 'pembayaran_provider.dart';
+import 'deposito_provider.dart';
+import 'pinjaman_provider.dart';
+import 'mutasi_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SaldoProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => PembayaranProvider()),
+        ChangeNotifierProvider(create: (_) => DepositoProvider()),
+        ChangeNotifierProvider(create: (_) => PinjamanProvider()),
+        ChangeNotifierProvider(create: (_) => MutasiProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,6 +50,14 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
+        '/profile': (context) => const Profile(),
+        '/cek_saldo': (context) => const CekSaldo(),
+        '/transfer': (context) => const Transfer(),
+        '/deposito': (context) => const Deposito(),
+        '/pembayaran': (context) => const Pembayaran(),
+        '/pinjaman': (context) => const Pinjaman(),
+        '/mutasi': (context) => const Mutasi(),
+        '/setting': (context) => const Setting(),
       },
     );
   }
